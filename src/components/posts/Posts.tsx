@@ -41,23 +41,19 @@ export function Posts() {
 
   if (isLoading) return <h2>Loading...</h2>;
   if (isError || !posts)
-    return <ErrorMessage message={error?.message || "Fetching Failed"} />;
+    return <ErrorMessage message={error?.message || "Fetching blogs failed!!"} />;
 
   return (
-    <div className="grid grid-cols-3 gap-4 mt-2">
-      <div className="col-span-2 border rounded p-2">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+      <div className="col-span-2 border rounded p-4">
         <nav
-          className="flex items-center justify-between border-b border-gray-200 bg-white py-3"
+          className="flex items-baseline justify-between border-b border-gray-200 bg-white py-3"
           aria-label="Pagination"
         >
-          <div className="hidden sm:block">
-            <p className="text-sm text-gray-700">
-              <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
-                Page {currentPage}
-              </span>
-            </p>
-          </div>
-          <div className="flex flex-1 justify-between sm:justify-end">
+          <h3 className="flex flex-1">
+            Blogs
+          </h3>
+          <div className="justify-between">
             <button
               disabled={currentPage === 1}
               onClick={() => {
@@ -67,12 +63,15 @@ export function Posts() {
             >
               Previous
             </button>
+            <span className="relative inline-flex items-center rounded bg-blue-50 mx-4 px-3 py-2 text-sm font-semibold text-blue-700 ring-1 ring-inset ring-blue-700/10">
+                {currentPage}
+            </span>
             <button
               disabled={currentPage === maxPostPage}
               onClick={() => {
                 setCurrentPage((s) => s + 1);
               }}
-              className="relative ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
+              className="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
             >
               Next
             </button>
@@ -82,7 +81,7 @@ export function Posts() {
           {posts.map((post) => (
             <li
               key={post.id}
-              className="flex justify-between gap-x-6 px-2 py-5 hover:shadow-md"
+              className="flex justify-between gap-x-6 hover:shadow-md"
               onClick={() => {
                 updateMutation.reset();
                 deleteMutation.reset();
@@ -91,10 +90,10 @@ export function Posts() {
             >
               <div className="flex min-w-0 gap-x-4">
                 <div className="min-w-0 flex-auto">
-                  <p className="text-sm font-semibold leading-6 text-gray-900">
+                  <p className="text-sm font-semibold">
                     {post.title}
                   </p>
-                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">
+                  <p className="mt-1 truncate text-xs">
                     {post.body}
                   </p>
                 </div>
@@ -103,7 +102,13 @@ export function Posts() {
           ))}
         </ul>
       </div>
-      <div className="border rounded p-2">
+      <div className="border rounded p-4">
+        <>
+        {!selectedPost && (
+          <h3>
+          Please select the blog to see the details.
+          </h3>
+        )}
         {selectedPost && (
           <PostDetail
             post={selectedPost}
@@ -111,6 +116,7 @@ export function Posts() {
             updateMutation={updateMutation}
           />
         )}
+        </>
       </div>
     </div>
   );

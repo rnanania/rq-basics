@@ -1,5 +1,6 @@
 import { UseMutationResult, useQuery } from "@tanstack/react-query";
 import { Post, fetchComments } from "api/posts";
+import ErrorMessage from "components/error/Error";
 
 type CommentsProps = {
   postId: number;
@@ -17,16 +18,17 @@ const Comments = ({ postId }: CommentsProps) => {
   });
 
   if (isLoading) return <h2>Loading...</h2>;
-  if (isError || !comments) return <h2>{error?.message}</h2>;
+  if (isError || !comments)
+    return <ErrorMessage message={error?.message || "Fetching comments failed!!"} />;
 
   return (
-    <>
+    <ul>
       {comments.map((comment) => (
         <li key={comment.id}>
           {comment.email}: {comment.body}
         </li>
       ))}
-    </>
+    </ul>
   );
 };
 
@@ -35,7 +37,6 @@ type PostDetailProps = {
   deleteMutation: UseMutationResult<void, Error, number, unknown>;
   updateMutation: UseMutationResult<void, Error, number, unknown>;
 };
-
 export function PostDetail({
   post,
   deleteMutation,
@@ -43,11 +44,11 @@ export function PostDetail({
 }: PostDetailProps) {
   return (
     <>
-      <h3 className="text-base font-bold leading-8 text-gray-900">
+      <h3>
         {post.title}
       </h3>
       <p className="my-2">{post.body}</p>
-      <div className="flex flex-1 justify-between sm:justify-end my-2">
+      <div className="flex flex-1 justify-end my-2">
         <button
           onClick={() => {
             deleteMutation.mutate(post.id);
@@ -66,7 +67,7 @@ export function PostDetail({
         </button>
       </div>
       <hr />
-      <h4 className="text-base font-bold leading-8 text-gray-900">Comments</h4>
+      <h4>Comments</h4>
       <Comments postId={post.id} />
     </>
   );
